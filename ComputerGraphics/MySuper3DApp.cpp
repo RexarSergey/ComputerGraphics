@@ -28,9 +28,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 		return 0;
 	}
 	default:
-		{
-			return DefWindowProc(hwnd, umessage, wparam, lparam);
-		}
+	{
+		return DefWindowProc(hwnd, umessage, wparam, lparam);
+	}
 	}
 }
 
@@ -41,8 +41,8 @@ int main()
 	HINSTANCE hInstance = GetModuleHandle(nullptr);
 
 #pragma region Window init
-    WNDCLASSEX wc;
-    
+	WNDCLASSEX wc;
+
 	wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
@@ -125,7 +125,7 @@ int main()
 		nullptr,
 		&context);
 
-	if(FAILED(res))
+	if (FAILED(res))
 	{
 		// Well, that was unexpected
 	}
@@ -143,7 +143,7 @@ int main()
 		nullptr /*include*/,
 		"VSMain",
 		"vs_5_0",
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION | D3DCOMPILE_PACK_MATRIX_ROW_MAJOR,
 		0,
 		&vertexBC,
 		&errorVertexCode);
