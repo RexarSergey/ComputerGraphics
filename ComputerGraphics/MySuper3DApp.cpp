@@ -135,7 +135,7 @@ int main()
 	res = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backTex);	// __uuidof(ID3D11Texture2D)
 	res = device->CreateRenderTargetView(backTex, nullptr, &rtv);
 
-
+	//-----------------------------------------------------------
 	ID3DBlob* vertexBC = nullptr;
 	ID3DBlob* errorVertexCode = nullptr;
 	res = D3DCompileFromFile(L"./Shaders/MyVeryFirstShader.hlsl",
@@ -266,7 +266,7 @@ int main()
 
 
 
-
+	//-------------------------------------------------------------
 	std::chrono::time_point<std::chrono::steady_clock> PrevTime = std::chrono::steady_clock::now();
 	float totalTime = 0;
 	unsigned int frameCount = 0;
@@ -284,6 +284,10 @@ int main()
 		// If windows signals to end the application then exit out.
 		if (msg.message == WM_QUIT) {
 			isExitRequested = true;
+
+			vertexShader->Release();
+			pixelShader->Release();
+			break;
 		}
 
 		context->ClearState();
