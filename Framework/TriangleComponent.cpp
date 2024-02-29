@@ -1,14 +1,14 @@
 #include "TriangleComponent.h"
 
-TriangleComponent::TriangleComponent()
-{}
 
-void TriangleComponent::Initialize()
+#include "Game.h"
+
+TriangleComponent::TriangleComponent(Game* game,
+	std::vector<DirectX::XMFLOAT4> points,
+	std::vector<int>& indeces)
+	: GameComponent (game)
 {
-	InitVertex();
-	InitPixel();
-	InitLayout();
-	//-------------------------------------------------------------
+#pragma region Vertex Buffer
 
 	D3D11_BUFFER_DESC vertexBufDesc = {};
 	vertexBufDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -19,74 +19,18 @@ void TriangleComponent::Initialize()
 	vertexBufDesc.ByteWidth = sizeof(DirectX::XMFLOAT4) * std::size(points);
 
 	D3D11_SUBRESOURCE_DATA vertexData = {};
-	vertexData.pSysMem = points;
+	vertexData.pSysMem = &points[0];
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
 
-	game->device->CreateBuffer(&vertexBufDesc, &vertexData, &vb);
+	game->GetGfx()->GetDevice()->CreateBuffer(&vertexBufDesc, &vertexData, &vertexBuffer);
 
-	int indeces[] = { 0,1,2 };
-	D3D11_BUFFER_DESC indexBufDesc = {};
-	indexBufDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufDesc.CPUAccessFlags = 0;
-	indexBufDesc.MiscFlags = 0;
-	indexBufDesc.StructureByteStride = 0;
-	indexBufDesc.ByteWidth = sizeof(int) * std::size(indeces);
+#pragma endregion Vertex Buffer
 
-	D3D11_SUBRESOURCE_DATA indexData = {};
-	indexData.pSysMem = indeces;
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
+#pragma region Vertex Shader
 
-	
-	game->device->CreateBuffer(&indexBufDesc, &indexData, &ib);
-
-
-
-
-	CD3D11_RASTERIZER_DESC rastDesc = {};
-	rastDesc.CullMode = D3D11_CULL_NONE;
-	rastDesc.FillMode = D3D11_FILL_SOLID;
-
-	HRESULT res = game->device->CreateRasterizerState(&rastDesc, &rastState);
-
-	game->context->RSSetState(rastState);
-	
-}
-
-void TriangleComponent::DestroyResources()
-{
-	vertexShader->Release();
-	pixelShader->Release();
-}
-
-void TriangleComponent::Update()
-{
-	UINT strides[] = { 32 };
-	UINT offsets[] = { 0 };
-	game->context->RSSetState(rastState);
-
-	game->context->IASetInputLayout(layout);
-	game->context->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	game->context->IASetIndexBuffer(ib, DXGI_FORMAT_R32_UINT, 0);
-	game->context->IASetVertexBuffers(0, 1, &vb, strides, offsets);
-	game->context->VSSetShader(vertexShader, nullptr, 0);
-	game->context->PSSetShader(pixelShader, nullptr, 0);
-}
-
-void TriangleComponent::Draw()
-{
-
-	game->context->DrawIndexed(6, 0, 0);
-
-}
-
-void TriangleComponent::InitVertex()
-{
-	vertexBC = nullptr;
+	ID3DBlob* vertexBC = nullptr;
 	ID3DBlob* errorVertexCode = nullptr;
-
 	HRESULT res = D3DCompileFromFile(L"./Shaders/MyVeryFirstShader.hlsl",
 		nullptr /*macros*/,
 		nullptr /*include*/,
@@ -97,67 +41,60 @@ void TriangleComponent::InitVertex()
 		&vertexBC,
 		&errorVertexCode);
 
-	if (FAILED(res)) {
-		// If the shader failed to compile it should have written something to the error message.
-		if (errorVertexCode) {
-			char* compileErrors = (char*)(errorVertexCode->GetBufferPointer());
-
-			std::cout << compileErrors << std::endl;
-		}
-		// If there was  nothing in the error message then it simply could not find the shader file itself.
-		else
-		{
-			MessageBox(game->display->hWnd, L"MyVeryFirstShader.hlsl", L"Missing Shader File", MB_OK);
-		}
-		return;
-	}
-
-	game->device->CreateVertexShader(
+	game->GetGfx()->GetDevice()->CreateVertexShader(
 		vertexBC->GetBufferPointer(),
 		vertexBC->GetBufferSize(),
 		nullptr, &vertexShader);
-}
 
-void TriangleComponent::InitPixel()
-{
-	D3D_SHADER_MACRO Shader_Macros[] = { "TEST", "1", "TCOLOR", "float4(0.0f, 1.0f, 0.0f, 1.0f)", nullptr, nullptr };
+#pragma endregion Vertex Shader
 
-	pixelBC;
+#pragma region Index Buffer
+
+	D3D11_BUFFER_DESC indexBufDesc = {};
+	indexBufDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufDesc.CPUAccessFlags = 0;
+	indexBufDesc.MiscFlags = 0;
+	indexBufDesc.StructureByteStride = 0;
+	indexBufDesc.ByteWidth = sizeof(int) * std::size(indeces);
+
+	D3D11_SUBRESOURCE_DATA indexData = {};
+	indexData.pSysMem = &indeces[0];
+	indexData.SysMemPitch = 0;
+	indexData.SysMemSlicePitch = 0;
+
+	game->GetGfx()->GetDevice()->CreateBuffer(&indexBufDesc, &indexData, &indexBuffer);
+
+#pragma endregion Index Buffer
+
+#pragma region Pixel Shader
+
+	D3D_SHADER_MACRO Shader_Macros[] = { "TEST",
+		"1",
+		"TCOLOR",
+		"float4(0.0f, 1.0f, 0.0f, 1.0f)",
+		nullptr, nullptr };
+	ID3DBlob* pixelBC;
 	ID3DBlob* errorPixelCode;
-	
-	HRESULT res = D3DCompileFromFile(L"./Shaders/MyVeryFirstShader.hlsl", 
-		Shader_Macros /*macros*/, 
-		nullptr /*include*/, 
-		"PSMain", 
-		"ps_5_0", 
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 
-		0, 
-		&pixelBC, 
+	res = D3DCompileFromFile(L"./Shaders/MyVeryFirstShader.hlsl",
+		Shader_Macros /*macros*/,
+		nullptr /*include*/,
+		"PSMain",
+		"ps_5_0",
+		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		0,
+		&pixelBC,
 		&errorPixelCode);
 
-	if (FAILED(res)) {
-		// If the shader failed to compile it should have written something to the error message.
-		if (errorPixelCode) {
-			char* compileErrors = (char*)(errorPixelCode->GetBufferPointer());
-
-			std::cout << compileErrors << std::endl;
-		}
-		// If there was  nothing in the error message then it simply could not find the shader file itself.
-		else
-		{
-			MessageBox(game->display->hWnd, L"MyVeryFirstShader.hlsl", L"Missing Shader File", MB_OK);
-		}
-		return;
-	}
-
-	game->device->CreatePixelShader(
+	game->GetGfx()->GetDevice()->CreatePixelShader(
 		pixelBC->GetBufferPointer(),
 		pixelBC->GetBufferSize(),
 		nullptr, &pixelShader);
-}
 
-void TriangleComponent::InitLayout()
-{
+#pragma endregion Pixel Shader
+
+#pragma region Layout
+
 	D3D11_INPUT_ELEMENT_DESC inputElements[] = {
 		D3D11_INPUT_ELEMENT_DESC {
 			"POSITION",
@@ -177,10 +114,25 @@ void TriangleComponent::InitLayout()
 			0}
 	};
 
-	game->device->CreateInputLayout(
+	game->GetGfx()->GetDevice()->CreateInputLayout(
 		inputElements,
 		2,
 		vertexBC->GetBufferPointer(),
 		vertexBC->GetBufferSize(),
 		&layout);
+
+#pragma endregion Layout
+}
+
+void TriangleComponent::Draw()
+{
+	game->GetGfx()->GetContext()->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &strides[0], &offsets[0]);
+	game->GetGfx()->GetContext()->VSSetShader(vertexShader.Get(), nullptr, 0);
+
+	game->GetGfx()->GetContext()->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	game->GetGfx()->GetContext()->PSSetShader(pixelShader.Get(), nullptr, 0);
+
+	game->GetGfx()->GetContext()->IASetInputLayout(layout.Get());
+
+	game->GetGfx()->GetContext()->DrawIndexed(3, 0, 0);
 }

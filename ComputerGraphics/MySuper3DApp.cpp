@@ -285,8 +285,8 @@ int main()
 		if (msg.message == WM_QUIT) {
 			isExitRequested = true;
 
-			vertexShader->Release();
-			pixelShader->Release();
+			// vertexShader->Release();
+			// pixelShader->Release();
 			break;
 		}
 

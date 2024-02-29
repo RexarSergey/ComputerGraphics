@@ -6,23 +6,37 @@
 class DisplayWin32
 {
 public:
-	DisplayWin32(LPCWSTR name = L"Application",
-				 int height		= 800,
-			     int width		= 800);
-	void CreateWin();
+	DisplayWin32(UINT width, UINT height, LPCWSTR name);
+	DisplayWin32(const DisplayWin32&) = delete;
+	DisplayWin32& operator=(const DisplayWin32&) = delete;
+	~DisplayWin32();
 
-public:
-	HINSTANCE hInstance;
-	LPCWSTR applicationName;
-
-	int clientHeight;
-	int clientWidth;
-
-	WNDCLASSEX wc;
-	HWND hWnd;
+	HWND getHWnd();
 
 private:
-	void InitWC();
-	void InitHWnd();
+	class WinClass
+	{
+	public:
+		static const LPCWSTR GetName() noexcept;
+		static HINSTANCE GetInstance() noexcept;
+
+	private:
+		WinClass() noexcept;
+		~WinClass();
+		WinClass(const WinClass&) = delete;
+		WinClass& operator=(const WinClass&) = delete;
+
+
+	private:
+		static constexpr const LPCWSTR appName = L"WinClass";
+		static WinClass wndClass;
+		HINSTANCE hInstance;
+	};
+
+private:
+	static LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam);
+
+private:
+	HWND hWnd;
 };
 

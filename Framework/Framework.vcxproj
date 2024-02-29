@@ -131,17 +131,15 @@
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameComponent.cpp" />
+    <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="TriangleComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DisplayWin32.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameComponent.h" />
-    <ClInclude Include="Keys.h" />
+    <ClInclude Include="Graphics.h" />
     <ClInclude Include="TriangleComponent.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="Delegates.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

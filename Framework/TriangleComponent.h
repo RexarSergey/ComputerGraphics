@@ -2,36 +2,40 @@
 
 #include "GameComponent.h"
 
+#include <wrl.h>
+#include <vector>
+#include <directxmath.h>
+#include <d3d11.h>
+#include <d3dcompiler.h>
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dcompiler.lib")
+
+
 class TriangleComponent :
     public GameComponent
 {
 public:
-    TriangleComponent();
+    TriangleComponent(Game* game,
+        std::vector<DirectX::XMFLOAT4> points,
+        std::vector<int>& indeces);
 
-    void Initialize() ;
-    void DestroyResources() ;
-    void Update() ;
-    void Draw() ;
-    
-    ID3D11Buffer* vb;
-    ID3D11Buffer* ib;
-    ID3D11RasterizerState* rastState;
-    DirectX::XMFLOAT4 points[6];
 
+    void Draw();
+;
 
 private:
-    void InitVertex();
-    void InitPixel();
-    void InitLayout();
+	//friend class Game;
 
-private:
-    ID3DBlob* vertexBC;
-    ID3DBlob* pixelBC;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
 
-    ID3D11VertexShader* vertexShader;
-    ID3D11PixelShader* pixelShader;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
 
-    ID3D11InputLayout* layout;
+	Microsoft::WRL::ComPtr <ID3D11InputLayout> layout;
 
+	std::vector<UINT> strides{ 32 };
+	std::vector<UINT> offsets{ 0 };
 };
 
