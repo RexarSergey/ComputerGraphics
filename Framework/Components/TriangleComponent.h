@@ -16,16 +16,18 @@ class TriangleComponent :
     public GameComponent
 {
 public:
-    TriangleComponent(Game* game,
-        std::vector<DirectX::XMFLOAT4> points,
+    TriangleComponent(Game* inGame,
+        std::vector<DirectX::XMFLOAT4>& points,
         std::vector<int>& indeces);
 
 
-    void Draw();
-;
+	void Initialize() override;
+	void Draw() override;
+
 
 private:
-	//friend class Game;
+	std::vector<DirectX::XMFLOAT4> points;
+	std::vector<int> indeces;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> vertexBuffer;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
@@ -37,5 +39,6 @@ private:
 
 	std::vector<UINT> strides{ 32 };
 	std::vector<UINT> offsets{ 0 };
+	UINT indexCount;
 };
 

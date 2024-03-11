@@ -81,7 +81,7 @@ ID3D11DeviceContext* Graphics::GetContext()
 
 void Graphics::ClearBuffer(float red, float green, float blue) noexcept
 {
-	// Color background to red (or another collor)
+	// Color background
 	const float color[] = { red, green, blue, 1.0f };
 	context->ClearRenderTargetView(rtv.Get(), color);
 }

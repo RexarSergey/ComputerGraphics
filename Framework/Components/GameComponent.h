@@ -8,7 +8,8 @@ class GameComponent
 public:
 	GameComponent(Game* inGame);
 
-	virtual void Draw() = 0;
+	virtual void Initialize();
+	virtual void Draw();
 
 protected:
 	Game* game;

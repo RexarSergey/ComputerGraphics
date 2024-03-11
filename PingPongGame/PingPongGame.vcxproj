@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{84857a15-5e4b-4ee5-8a2f-498b6510ccc3}</ProjectGuid>
-    <RootNamespace>Framework</RootNamespace>
+    <ProjectGuid>{997a3409-f875-4815-9bca-922b459e9375}</ProjectGuid>
+    <RootNamespace>PingPongGame</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -104,7 +104,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,31 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Delegates\Delegates.cpp" />
-    <ClCompile Include="InputDevice\InputDevice.cpp" />
-    <ClCompile Include="Display\DisplayWin32.cpp" />
-    <ClCompile Include="Framework.cpp" />
-    <ClCompile Include="Game\Game.cpp" />
-    <ClCompile Include="Components\GameComponent.cpp" />
-    <ClCompile Include="Graphics\Graphics.cpp" />
-    <ClCompile Include="Components\TriangleComponent.cpp" />
+    <ClCompile Include="PingPongGame.cpp" />
+    <ClCompile Include="Core\PP_GameMode.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\CG_Rethink\CG_Rethink\Input\Keys.h" />
-    <ClInclude Include="Delegates\Delegates.h" />
-    <ClInclude Include="InputDevice\InputDevice.h" />
-    <ClInclude Include="InputDevice\Keys.h" />
-    <ClInclude Include="Display\DisplayWin32.h" />
-    <ClInclude Include="Game\Game.h" />
-    <ClInclude Include="Components\GameComponent.h" />
-    <ClInclude Include="Graphics\Graphics.h" />
-    <ClInclude Include="Components\TriangleComponent.h" />
-    <ClInclude Include="SimpleMath\SimpleMath.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="SimpleMath\SimpleMath.inl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </None>
+    <ClInclude Include="Core\PP_GameMode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

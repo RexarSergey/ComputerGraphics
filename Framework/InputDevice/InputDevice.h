@@ -2,12 +2,16 @@
 
 #include <unordered_set>
 #include "Keys.h"
-#include "Exports.h"
+#include "../Delegates/Delegates.h"
+#include <d3d11.h>
+#include "../SimpleMath/SimpleMath.h"
+
+#pragma comment(lib, "d3d11.lib")
 
 
 class Game;
 
-class GAMEFRAMEWORK_API InputDevice
+class InputDevice
 {
 	friend class Game;
 	
@@ -110,9 +114,12 @@ protected:
 		int Y;
 	};
 
+public:
 	void OnKeyDown(KeyboardInputEventArgs args);
 	void OnMouseMove(RawMouseEventArgs args);
 };
+
+extern InputDevice* inputDevice;
 
 /*
 		case WM_INPUT:
